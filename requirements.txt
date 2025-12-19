@@ -1,9 +1,5 @@
 fastapi
 uvicorn
-python-multipart
-openai
 python-docx
 reportlab
-pypdf
-
-
+openai
