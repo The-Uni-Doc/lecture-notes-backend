@@ -3,3 +3,4 @@ uvicorn
 python-docx
 reportlab
 openai
+python-multipart
