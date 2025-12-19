@@ -147,20 +147,70 @@ def call_ai_make_notes(source_text: str) -> str:
 
     # Keep it simple: one prompt that returns markdown notes.
     system = (
-        "You write clear student study notes. "
-        "Only use the provided source material. Do not invent facts."
+    "You are an expert pharmacy educator creating exam-ready study material. "
+    "You write clearly, concisely, and accurately for pharmacy students. "
+    "You strictly use only the provided source material and do not invent facts."
+)
+
     )
     user = (
-        "Create structured study notes in Markdown from this source material.\n\n"
-        "Rules:\n"
-        "- Use headings (#, ##, ###)\n"
-        "- Use concise bullet points\n"
-        "- Add a short 'Key Terms' section\n"
-        "- Add 5-10 practice questions at the end\n"
-        "- If something is unclear in the source, say 'Not specified in the source'.\n\n"
-        "SOURCE MATERIAL:\n"
-        f"{source_text}"
-    )
+    "Create TWO SEPARATE SECTIONS from the source material below.\n\n"
+
+    "================================\n"
+    "SECTION 1: STUDY NOTES (PHARMACY)\n"
+    "================================\n\n"
+
+    "Purpose:\n"
+    "- For a student studying this topic for the FIRST TIME.\n\n"
+
+    "Rules:\n"
+    "- Do NOT remove or omit anything required to meet the learning objectives.\n"
+    "- Organize content primarily by learning objective.\n"
+    "- Be concise but explanatory.\n"
+    "- Consolidate repeated ideas.\n"
+    "- Do NOT invent facts or add external knowledge.\n"
+    "- If something is not covered in the source, say: \"Not covered in these slides\".\n\n"
+
+    "Required structure:\n"
+    "1. Title\n"
+    "2. Learning Objectives (as given)\n"
+    "3. Big Picture Overview (5–6 bullets explaining how the topic fits together)\n"
+    "4. Core Notes\n"
+    "   - One section per learning objective\n"
+    "   - Clear headings and bullet points\n"
+    "5. Diagrams & Flowcharts\n"
+    "   - Use simple text-based diagrams where helpful (mechanisms, pathways, comparisons)\n"
+    "6. Additional Information\n"
+    "   - Include content not essential for learning objectives\n"
+    "7. Key Terms (simple, pharmacy-relevant definitions)\n\n"
+
+    "========================================\n"
+    "SECTION 2: RAPID REVIEW (PHARMACY EXAM)\n"
+    "========================================\n\n"
+
+    "Purpose:\n"
+    "- For LAST-MINUTE EXAM REVISION.\n\n"
+
+    "Rules:\n"
+    "- Extremely concise.\n"
+    "- Bullet points only.\n"
+    "- No explanations unless essential.\n"
+    "- Focus on drug names, mechanisms, indications, contraindications, key interactions,\n"
+    "  and NHS/NICE service facts IF present in the source.\n"
+    "- Do NOT include anything not in the source.\n\n"
+
+    "Required structure:\n"
+    "- Key Facts\n"
+    "- High-Yield Drug Points\n"
+    "- Common Exam Traps / Confusions\n"
+    "- 5–10 Exam-Style Questions (short answer or MCQ style)\n\n"
+
+    "================================\n"
+    "SOURCE MATERIAL\n"
+    "================================\n"
+    f"{source_text}"
+)
+
 
     resp = client.chat.completions.create(
         model=MODEL,
@@ -326,3 +376,4 @@ async def make_notes(request: Request, files: List[UploadFile] = File(...)):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
+
