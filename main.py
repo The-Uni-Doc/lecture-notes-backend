@@ -147,68 +147,66 @@ def call_ai_make_notes(source_text: str) -> str:
 
     # Keep it simple: one prompt that returns markdown notes.
     system = (
-    "You are an expert pharmacy educator creating exam-ready study material. "
-    "You write clearly, concisely, and accurately for pharmacy students. "
-    "You strictly use only the provided source material and do not invent facts."
+    "You are a pharmacy educator creating study material for exams. "
+    "You must strictly use ONLY the provided source material. "
+    "You are NOT allowed to add general knowledge. "
+    "If something is not explicitly stated in the source, you MUST write: "
+    "'Not covered in these slides'. "
+    "Output must be clean Markdown suitable for DOCX/PDF conversion."
+)
 
-    )
     user = (
-    "Create TWO SEPARATE SECTIONS from the source material below.\n\n"
+    "You MUST create TWO SEPARATE DOCUMENTS in ONE response.\n\n"
 
-    "================================\n"
-    "SECTION 1: STUDY NOTES (PHARMACY)\n"
-    "================================\n\n"
+    "# DOCUMENT 1: STUDY NOTES (PHARMACY)\n\n"
 
-    "Purpose:\n"
-    "- For a student studying this topic for the FIRST TIME.\n\n"
+    "Audience:\n"
+    "- A pharmacy student studying this topic for the FIRST TIME.\n\n"
 
-    "Rules:\n"
-    "- Do NOT remove or omit anything required to meet the learning objectives.\n"
-    "- Organize content primarily by learning objective.\n"
-    "- Be concise but explanatory.\n"
-    "- Consolidate repeated ideas.\n"
-    "- Do NOT invent facts or add external knowledge.\n"
-    "- If something is not covered in the source, say: \"Not covered in these slides\".\n\n"
+    "MANDATORY RULES:\n"
+    "- Do NOT remove or omit anything related to the learning objectives.\n"
+    "- Organize core content BY learning objective.\n"
+    "- Be concise, consolidated, and accurate.\n"
+    "- Do NOT invent or infer beyond the source.\n"
+    "- Any missing detail must be written as: 'Not covered in these slides'.\n\n"
 
-    "Required structure:\n"
-    "1. Title\n"
-    "2. Learning Objectives (as given)\n"
-    "3. Big Picture Overview (5–6 bullets explaining how the topic fits together)\n"
-    "4. Core Notes\n"
-    "   - One section per learning objective\n"
-    "   - Clear headings and bullet points\n"
-    "5. Diagrams & Flowcharts\n"
-    "   - Use simple text-based diagrams where helpful (mechanisms, pathways, comparisons)\n"
-    "6. Additional Information\n"
-    "   - Include content not essential for learning objectives\n"
-    "7. Key Terms (simple, pharmacy-relevant definitions)\n\n"
+    "MANDATORY STRUCTURE:\n"
+    "## Title\n"
+    "## Learning Objectives\n"
+    "## Big Picture Overview (how concepts connect)\n"
+    "## Core Notes (grouped by learning objective)\n"
+    "## Diagrams & Flowcharts\n"
+    "   - You MUST include text-based diagrams or flowcharts WHERE THEY HELP UNDERSTANDING.\n"
+    "   - Especially for mechanisms, pathways, comparisons, or cause–effect relationships.\n"
+    "   - Use ASCII-style diagrams (arrows, boxes, steps).\n"
+    "## Additional Information\n"
+    "   - ONLY content not essential to meeting learning objectives.\n"
+    "## Key Terms\n\n"
 
-    "========================================\n"
-    "SECTION 2: RAPID REVIEW (PHARMACY EXAM)\n"
-    "========================================\n\n"
+    "# DOCUMENT 2: RAPID REVIEW (PHARMACY EXAM)\n\n"
 
-    "Purpose:\n"
-    "- For LAST-MINUTE EXAM REVISION.\n\n"
+    "Audience:\n"
+    "- A student revising shortly before an exam.\n\n"
 
-    "Rules:\n"
+    "MANDATORY RULES:\n"
     "- Extremely concise.\n"
-    "- Bullet points only.\n"
-    "- No explanations unless essential.\n"
-    "- Focus on drug names, mechanisms, indications, contraindications, key interactions,\n"
-    "  and NHS/NICE service facts IF present in the source.\n"
-    "- Do NOT include anything not in the source.\n\n"
+    "- Bullet points ONLY.\n"
+    "- No explanations unless essential for exam clarity.\n"
+    "- Focus on high-yield exam facts.\n\n"
 
-    "Required structure:\n"
-    "- Key Facts\n"
-    "- High-Yield Drug Points\n"
-    "- Common Exam Traps / Confusions\n"
-    "- 5–10 Exam-Style Questions (short answer or MCQ style)\n\n"
+    "MANDATORY STRUCTURE:\n"
+    "## High-Yield Facts\n"
+    "## High-Yield Drug Points (MOA, use, cautions, interactions IF present)\n"
+    "## Interactions & Monitoring\n"
+    "## Common Exam Traps / Confusions\n"
+    "## Exam-Style Questions\n\n"
 
     "================================\n"
-    "SOURCE MATERIAL\n"
+    "SOURCE MATERIAL (USE ONLY THIS)\n"
     "================================\n"
     f"{source_text}"
 )
+
 
 
     resp = client.chat.completions.create(
@@ -375,5 +373,6 @@ async def make_notes(request: Request, files: List[UploadFile] = File(...)):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
+
 
 
