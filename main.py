@@ -150,7 +150,6 @@ def call_ai_make_notes(source_text: str) -> str:
     "You are an expert pharmacy educator creating exam-ready study material. "
     "You write clearly, concisely, and accurately for pharmacy students. "
     "You strictly use only the provided source material and do not invent facts."
-)
 
     )
     user = (
@@ -376,4 +375,5 @@ async def make_notes(request: Request, files: List[UploadFile] = File(...)):
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     return JSONResponse(status_code=exc.status_code, content={"error": exc.detail})
+
 
