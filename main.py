@@ -1,3 +1,6 @@
+from openai import OpenAI
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 import os, io, zipfile
 from typing import List
 from fastapi import FastAPI, UploadFile, File
@@ -61,3 +64,4 @@ async def make_notes(files: List[UploadFile] = File(...)):
         media_type="application/zip",
         headers={"Content-Disposition": "attachment; filename=notes.zip"}
     )
+
